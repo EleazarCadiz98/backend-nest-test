@@ -4,9 +4,11 @@ pipeline {
 
     environment {
         NPM_CONFIG_CACHE= "${WORKSPACE}/.npm"
-        DOCKER_IMAGE_NAME= "us-west1-docker.pkg.dev/lab-agibiz/docker-repository"
+        DOCKER_REPOSITORY_NAME= "us-west1-docker.pkg.dev/lab-agibiz/docker-repository"
         DOCKER_REGISTRY= "https://us-west1-docker.pkg.dev"
         DOCKER_REGISTRY_CREDENTIALS= "gcp-registry-ele"  
+        DOCKER_IMAGE_NAME = "backend-nest-test-ele"
+        DOCKER_CONTAINER_NAME_IN_KUBERNETES = "backend-nest-test-elecontainer"
     }
     stages {
         stage ("1 - Proceso de Build & Test"){
@@ -38,11 +40,11 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry("${DOCKER_REGISTRY}", DOCKER_REGISTRY_CREDENTIALS){
-                        sh "docker build -t backend-nest-test-ele ." 
-                        sh "docker tag backend-nest-test-ele ${DOCKER_IMAGE_NAME}/backend-nest-test-ele"
-                        sh "docker tag backend-nest-test-ele ${DOCKER_IMAGE_NAME}/backend-nest-test-ele:${BUILD_NUMBER}"
-                        sh "docker push ${DOCKER_IMAGE_NAME}/backend-nest-test-ele" 
-                        sh "docker push ${DOCKER_IMAGE_NAME}/backend-nest-test-ele:${BUILD_NUMBER}" 
+                        sh "docker build -t ${DOCKER_IMAGE_NAME} ." 
+                        sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}"
+                        sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
+                        sh "docker push ${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}" 
+                        sh "docker push ${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}" 
                     }
                 }
                 
@@ -57,7 +59,7 @@ pipeline {
             }
             steps {
                 withKubeConfig([credentialsId: 'gcp-kubeconfig']){
-                    sh "kubectl -n lab-ele set image deployments/backend-nest-test-ele backend-nest-test-ele=${DOCKER_IMAGE_NAME}/backend-nest-test-ele:${BUILD_NUMBER}"
+                    sh "kubectl -n lab-ele set image deployments/${DOCKER_IMAGE_NAME} ${DOCKER_CONTAINER_NAME_IN_KUBERNETES}=${DOCKER_REPOSITORY_NAME}/${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
                 }
             }
         }

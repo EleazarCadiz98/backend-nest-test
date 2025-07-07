@@ -1,5 +1,5 @@
 apiVersion: v1
-kind: Namespace # Se especifica el tipo de recurso
+kind: Namespace 
 metadata:
   name: lab-ele
 ---
@@ -7,12 +7,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-nest-test-ele
-  namespace: lab-ele # Indico que quiero configurar mi API en el namespace que creé
-  labels: # Permite agregar etiquetas
+  namespace: lab-ele
+  labels:
     app: backend-nest-test-eletiqueta
-spec: # Aqui se empieza a definir lo que quiero desplegas
-  replicas: 2 #Indique que cuando se levante se replique N cantidad de veces
-  selector: # Indico un nombre para luego buscarlo a traves del servicio
+spec: 
+  replicas: 2 
+  selector: 
     matchLabels:
       app: backend-nest-test-eletiqueta
   template:
@@ -22,9 +22,9 @@ spec: # Aqui se empieza a definir lo que quiero desplegas
     spec:
       containers:
       - name: backend-nest-test-elecontainer
-        image: us-west1-docker.pkg.dev/lab-agibiz/docker-repository/backend-nest-test-ele # Le indico la image que se subio al repo de GCP
-        imagePullPolicy: Always # Le indico que cada vez que ocupe la imagen siempre la descargue para que tenga la ultima versión de la imagen
-      imagePullSecrets: # Especifica cual es el secret que debe usar para autenticar en GCP
+        image: us-west1-docker.pkg.dev/lab-agibiz/docker-repository/backend-nest-test-ele
+        imagePullPolicy: Always 
+      imagePullSecrets: 
       - name: regcred
 ---
 apiVersion: v1
@@ -42,7 +42,7 @@ spec:
     port: 80
     targetPort: 4000
 ---
-apiVersion: networking.k8s.io/v1 #Configuracion del Ingress Controller de NGINX
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingres-backend-nest-test-ele
