@@ -4,9 +4,9 @@ pipeline {
 
     environment {
         NPM_CONFIG_CACHE= "${WORKSPACE}/.npm"
-        DOCKER_IMAGE_NAME= "us-west1-docker.pkg.dev/lab-agibiz/docker-repository" // Repositorio en GCP
-        DOCKER_REGISTRY= "https://us-west1-docker.pkg.dev" // Usuario ("registry") de GCP
-        DOCKER_REGISTRY_CREDENTIALS= "gcp-registry-ele"  // Credenciales ("REGISTRY") de GCP
+        DOCKER_IMAGE_NAME= "us-west1-docker.pkg.dev/lab-agibiz/docker-repository"
+        DOCKER_REGISTRY= "https://us-west1-docker.pkg.dev"
+        DOCKER_REGISTRY_CREDENTIALS= "gcp-registry-ele"  
     }
     stages {
         stage ("1 - Proceso de Build & Test"){
